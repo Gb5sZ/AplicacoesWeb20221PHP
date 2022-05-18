@@ -51,9 +51,9 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
             } elseif(isset($_POST["alterar"])){
                 $sql = "UPDATE `empresa`.`funcionaio`
                         SET
-                        `salarioBruto` = $salarioB,
-                        `salarioLiquido` = $salarioL,
-                        `inss` = $desconto
+                        `salarioBruto` = $funcionario->salarioBruto,
+                        `salarioLiquido` = $funcionario->salarioLiquido,
+                        `inss` = $funcionario->inss
                         WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
                 if ($conecta->query($sql)===TRUE){
                     echo "Usuário alterado com sucesso!";
