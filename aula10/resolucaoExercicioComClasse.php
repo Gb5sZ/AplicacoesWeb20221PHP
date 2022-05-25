@@ -21,74 +21,24 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
         </form>
         <?php
             include 'Funcionario.php';
-            include 'ConexaoBD.php';
-            
+            include 'FuncionarioBD.php';
+                   
             $funcionario = new Funcionario(
                     $_POST["nome"],
                     $_POST["cargo"],
                     $_POST["salarioB"],
                     $_POST["desconto"]);
-            $conexao = new ConexaoBD();
-            
-            $conexao->conectaBD();
-            
+            $funcionarioBD = new FuncionarioBD();
+                        
             if(isset($_POST["localizar"])){
-                 $sql = "select * from empresa.funcionaio WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                $resultado = $conexao->conecta->query($sql);
-                if ($resultado->num_rows > 0) {
-                    while($linha = $resultado->fetch_assoc()) {
-                        echo "id: " . $linha["id"]. " - Nome: " . $linha["nome"]. " " . $linha["cargo"]. " " . $linha["salarioBruto"]." " . $linha["salarioLiquido"]."<br>";
-                    }
-                } else {
-                    echo "Usuário não encontrado!";   
-                }
+                 $funcionarioBD->buscar($funcionario);
             } elseif(isset($_POST["alterar"])){
-                $sql = "UPDATE `empresa`.`funcionaio`
-                        SET
-                        `salarioBruto` = $funcionario->salarioBruto,
-                        `salarioLiquido` = $funcionario->salarioLiquido,
-                        `inss` = $funcionario->inss
-                        WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                if ($conexao->conecta->query($sql)===TRUE){
-                    echo "Usuário alterado com sucesso!";
-                }
-                else {
-                    echo "Usuário não encontrado!";
-                } 
+                $funcionarioBD->alterar($funcionario); 
             } elseif(isset($_POST["deletar"])){
-                $sql = "delete from empresa.funcionaio WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                if ($conexao->conecta->query($sql)===TRUE){
-                    echo "Usuário deletado com sucesso!";
-                } else {
-                    echo "Usuário não encontrado!";
-                }
+                $funcionarioBD->deletar($funcionario);
             } else {
-                $sql = "select * from empresa.funcionaio WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                $resultado = $conexao->conecta->query($sql);
-                if ($resultado->num_rows > 0) {
-                    echo "Usuário já existe na base de dados";
-                } else {
-                    $sql = "INSERT INTO `empresa`.`funcionaio`
-                        (nome,
-                        cargo,
-                        salarioBruto,
-                        salarioLiquido,
-                        inss)
-                        VALUES
-                        ('$funcionario->nome',
-                        '$funcionario->cargo',
-                        $funcionario->salarioBruto,
-                        $funcionario->salarioLiquido,
-                        $funcionario->inss);";
-
-                    if ($conexao->conecta->query($sql) === TRUE) {
-                        echo "Novos registros criados com sucesso<br>";
-                    } else {
-                        echo "Erro: " . $sql . "<br>" . $conexao->conecta->error."<br>";
-                    }
-                }
+                $funcionarioBD->inserir($funcionario);
             }
-            $conexao ->fecharBD();
         ?>
     </body>
 </html>
