@@ -21,26 +21,20 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
         </form>
         <?php
             include 'Funcionario.php';
+            include 'ConexaoBD.php';
+            
             $funcionario = new Funcionario(
                     $_POST["nome"],
                     $_POST["cargo"],
                     $_POST["salarioB"],
                     $_POST["desconto"]);
+            $conexao = new ConexaoBD();
             
-            $nome_servidor = "localhost";
-            $nome_usuario = "root";
-            $senha = "root";
-            // Criar conexão
-            $conecta = new mysqli($nome_servidor, $nome_usuario, $senha);
-            // Verificar Conexão
-            if ($conecta->connect_error) {
-                die("Conexão falhou: " . $conecta->connect_error."<br>");
-            }
-            echo "Conexão realizada com sucesso <br>";
+            $conexao->conectaBD();
             
             if(isset($_POST["localizar"])){
                  $sql = "select * from empresa.funcionaio WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                $resultado = $conecta->query($sql);
+                $resultado = $conexao->conecta->query($sql);
                 if ($resultado->num_rows > 0) {
                     while($linha = $resultado->fetch_assoc()) {
                         echo "id: " . $linha["id"]. " - Nome: " . $linha["nome"]. " " . $linha["cargo"]. " " . $linha["salarioBruto"]." " . $linha["salarioLiquido"]."<br>";
@@ -55,7 +49,7 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                         `salarioLiquido` = $funcionario->salarioLiquido,
                         `inss` = $funcionario->inss
                         WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                if ($conecta->query($sql)===TRUE){
+                if ($conexao->conecta->query($sql)===TRUE){
                     echo "Usuário alterado com sucesso!";
                 }
                 else {
@@ -63,14 +57,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                 } 
             } elseif(isset($_POST["deletar"])){
                 $sql = "delete from empresa.funcionaio WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                if ($conecta->query($sql)===TRUE){
+                if ($conexao->conecta->query($sql)===TRUE){
                     echo "Usuário deletado com sucesso!";
                 } else {
                     echo "Usuário não encontrado!";
                 }
             } else {
                 $sql = "select * from empresa.funcionaio WHERE nome='$funcionario->nome' and cargo='$funcionario->cargo'";
-                $resultado = $conecta->query($sql);
+                $resultado = $conexao->conecta->query($sql);
                 if ($resultado->num_rows > 0) {
                     echo "Usuário já existe na base de dados";
                 } else {
@@ -87,16 +81,14 @@ Click nbfs://nbhost/SystemFileSystem/Templates/Scripting/EmptyPHPWebPage.php to 
                         $funcionario->salarioLiquido,
                         $funcionario->inss);";
 
-                    if ($conecta->query($sql) === TRUE) {
+                    if ($conexao->conecta->query($sql) === TRUE) {
                         echo "Novos registros criados com sucesso<br>";
                     } else {
-                        echo "Erro: " . $sql . "<br>" . $conecta->error."<br>";
+                        echo "Erro: " . $sql . "<br>" . $conexao->conecta->error."<br>";
                     }
                 }
             }
-             
-            
-            $conecta->close();
+            $conexao ->fecharBD();
         ?>
     </body>
 </html>

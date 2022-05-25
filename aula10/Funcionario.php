@@ -14,7 +14,7 @@ class Funcionario {
         $this->cargo = $cargo;
         $this->salarioBruto = $salarioBruto;
         $this->inss = $inss;
-        calcSalarioLiquido();
+        $this->calcSalarioLiquido();
     }
     
     function __destruct() {
